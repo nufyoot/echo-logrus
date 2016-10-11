@@ -25,16 +25,16 @@ func NewWithName(name string) echo.MiddlewareFunc {
 // and logger
 func NewWithNameAndLogger(name string, l *logrus.Logger) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c *echo.Context) error {
+		return func(c echo.Context) error {
 			start := time.Now()
 
 			entry := l.WithFields(logrus.Fields{
-				"request": c.Request().RequestURI,
+				"request": c.Request().URI,
 				"method":  c.Request().Method,
-				"remote":  c.Request().RemoteAddr,
+				"remote":  c.Request().RemoteAddress,
 			})
 
-			if reqID := c.Request().Header.Get("X-Request-Id"); reqID != "" {
+			if reqID := c.Request().Header().Get("X-Request-Id"); reqID != "" {
 				entry = entry.WithField("request_id", reqID)
 			}
 
